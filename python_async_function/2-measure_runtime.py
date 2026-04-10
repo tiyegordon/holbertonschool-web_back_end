@@ -1,19 +1,22 @@
 #!/usr/bin/env python3
-"""Measure the runtime of parallel asynchronous comprehensions."""
+""" Takes 2 int args, waits for random delay """
 
 import asyncio
-import time
+import random
+from typing import List
+wait_random = __import__('0-basic_async_syntax').wait_random
 
-async_comprehension = __import__("1-async_comprehension").async_comprehension
 
+async def wait_n(n: int, max_delay: int = 10) -> List[float]:
+    """ Waits for ran delay until max_delay, returns list of actual delays """
+    spawn_list = []
+    delay_list = []
+    for i in range(n):
+        delayed_task = asyncio.create_task(wait_random(max_delay))
+        delayed_task.add_done_callback(lambda x: delay_list.append(x.result()))
+        spawn_list.append(delayed_task)
 
-async def measure_runtime() -> float:
-    """Run four async comprehensions concurrently and return elapsed time."""
-    start_time = time.perf_counter()
-    await asyncio.gather(
-        async_comprehension(),
-        async_comprehension(),
-        async_comprehension(),
-        async_comprehension(),
-    )
-    return time.perf_counter() - start_time
+    for spawn in spawn_list:
+        await spawn
+
+    return delay_list
