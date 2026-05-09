@@ -21,4 +21,4 @@ const cleanSet = (aSet, startString) => {
     .split(',')
     .join('');
 };
-export default cleanSet; //
+export default cleanSet;
