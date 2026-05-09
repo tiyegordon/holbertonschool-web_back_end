@@ -16,9 +16,6 @@ const cleanSet = (aSet, startString) => {
     }
   }
 
-  return newArr.toString().split(',').join('-').split(startString)
-    .toString()
-    .split(',')
-    .join('');
+  return newArr.map(i => i . slice (startString.length)).join('-');
 };
 export default cleanSet;
