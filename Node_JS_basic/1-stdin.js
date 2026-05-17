@@ -12,25 +12,22 @@ const printClosingMessage = () => {
   }
 };
 
-async function run() {
-  fs.writeSync(1, 'Welcome to Holberton School, what is your name?\n');
-  process.on('exit', printClosingMessage);
-  process.on('SIGINT', () => {
+fs.writeSync(1, 'Welcome to Holberton School, what is your name?\n');
+
+process.on('exit', printClosingMessage);
+
+process.on('SIGINT', () => {
+  process.exit(0);
+});
+
+process.stdin.on('data', (chunk) => {
+  const name = chunk.toString().trim();
+  fs.writeSync(1, `Your name is: ${name}\r`);
+  if (appState.isInteractive) {
     process.exit(0);
-  });
-
-  try {
-    for await (const chunk of process.stdin) {
-      const name = chunk.toString().trim();
-      fs.writeSync(1, `Your name is: ${name}\r`);
-      if (appState.isInteractive) {
-        process.exit(0);
-      }
-    }
-  } catch (error) {
-    console.error('An unexpected error occurred:', error);
-    process.exit(1);
   }
-}
+});
 
-run();
+process.stdin.on('end', () => {
+  process.exit(0);
+});
