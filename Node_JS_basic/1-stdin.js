@@ -1,24 +1,9 @@
 const fs = require('fs');
-const { Writable } = require('stream');
 
 const appState = {
   isInteractive: process.stdin.isTTY,
   isClosed: false,
 };
-
-class killStdout extends Writable {
-  _write(chunk, encoding, callback) {
-    fs.write(1, chunk, (err) => {
-      if (err) {
-        console.error('Failed to write to stdout', err);
-        process.exit(1);
-      }
-      callback();
-    });
-  }
-}
-
-const customStdout = new killStdout();
 
 const printClosingMessage = () => {
   if (!appState.isClosed) {
@@ -28,7 +13,7 @@ const printClosingMessage = () => {
 };
 
 async function run() {
-  customStdout.write('Welcome to Holberton School, what is your name?\n');
+  fs.writeSync(1, 'Welcome to Holberton School, what is your name?\n');
   process.on('exit', printClosingMessage);
   process.on('SIGINT', () => {
     process.exit(0);
@@ -36,10 +21,8 @@ async function run() {
 
   try {
     for await (const chunk of process.stdin) {
-      const prefix = Buffer.from('Your name is: ');
-      const name = Buffer.from(chunk.toString().trim());
-      const outputBuffer = Buffer.concat([prefix, name, Buffer.from('\r')]);
-      customStdout.write(outputBuffer);
+      const name = chunk.toString().trim();
+      fs.writeSync(1, `Your name is: ${name}\r`);
       if (appState.isInteractive) {
         process.exit(0);
       }
