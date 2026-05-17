@@ -23,7 +23,7 @@ const customStdout = new killStdout();
 const printClosingMessage = () => {
   if (!appState.isClosed) {
     appState.isClosed = true;
-    customStdout.write('This important software is now closing\n');
+    fs.writeSync(1, 'This important software is now closing\n');
   }
 };
 
