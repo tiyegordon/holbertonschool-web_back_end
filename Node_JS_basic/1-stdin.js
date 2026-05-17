@@ -1,5 +1,6 @@
 const fs = require('fs');
 const { Writable } = require('stream');
+
 const appState = {
   isInteractive: process.stdin.isTTY,
   isClosed: false,
@@ -32,12 +33,12 @@ async function run() {
   process.on('SIGINT', () => {
     process.exit(0);
   });
+
   try {
     for await (const chunk of process.stdin) {
       const prefix = Buffer.from('Your name is: ');
       const name = Buffer.from(chunk.toString().trim());
-      const outputBuffer = Buffer.concat([prefix, name, Buffer.from('\n')]);
-
+      const outputBuffer = Buffer.concat([prefix, name, Buffer.from('\r')]);
       customStdout.write(outputBuffer);
       if (appState.isInteractive) {
         process.exit(0);
