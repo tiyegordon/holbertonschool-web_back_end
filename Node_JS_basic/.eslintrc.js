@@ -27,7 +27,6 @@ module.exports = {
       'LabeledStatement',
       'WithStatement',
     ],
-    'prefer-regex-literals': 'off', // fixes version mismatch with eslint-config-airbnb-base
   },
   overrides:[
     {
@@ -36,3 +35,4 @@ module.exports = {
     }
   ]
 };
+
